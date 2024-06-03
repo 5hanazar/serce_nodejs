@@ -1,7 +1,7 @@
 /** @type {import('./$types').PageServerLoad} */
-import type { Member } from '@prisma/client';
+import type { ClientDtoView } from '$lib/server';
 
 export async function load({ locals }) {
-    const user: Member = locals.user
+    const user: ClientDtoView = locals.user
     return { user }
 }

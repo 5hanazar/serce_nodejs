@@ -20,7 +20,7 @@ async function main() {
             onlineUtc: now
 		},
 	});
-    await prisma.client.create({
+    const client = await prisma.client.create({
         data: {
             active: true,
             name: "sha",
@@ -30,6 +30,47 @@ async function main() {
             devicesJ: "[\"tel1\", \"comp1\"]",
             createdUtc: now,
             onlineUtc: now
+        }
+    })
+    const client2 = await prisma.client.create({
+        data: {
+            active: true,
+            name: "rah",
+            phone: "234",
+            description: "",
+            address: "swoboda",
+            devicesJ: "[\"tel2\", \"comp2\"]",
+            createdUtc: now,
+            onlineUtc: now
+        }
+    })
+    const room = await prisma.room.create({
+        data: {
+            name: "",
+            adminClientId: null,
+            createdUtc: now
+        }
+    })
+    await prisma.clientAndRoom.create({
+        data: {
+            clientId: client.id,
+            roomId: room.id,
+            createdUtc: now
+        }
+    })
+    await prisma.clientAndRoom.create({
+        data: {
+            clientId: client2.id,
+            roomId: room.id,
+            createdUtc: now
+        }
+    })
+    await prisma.message.create({
+        data: {
+            description: "Hello",
+            clientId: client2.id,
+            roomId: room.id,
+            createdUtc: now
         }
     })
     console.log(`A new member was inserted.\nName: ${user.username}\nPassword: ${user.password}`);

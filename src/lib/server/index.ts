@@ -86,3 +86,17 @@ export type Paged<T> = {
 	size: number;
 	pageIndex: number;
 };
+
+export type RoomDtoView = {
+	id: number;
+	adminClient: ClientDtoView | null;
+	clients: ClientDtoView[];
+    messages: MessageDtoView[];
+	createdDate: string;
+};
+export type MessageDtoView = {
+	id: number;
+	description: string;
+	client: ClientDtoView;
+	createdDate: string;
+};
