@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Member {
+    id          Int     @id @default(autoincrement())
+    active      Boolean
+    username    String  @unique
+    password    String
+    name        String
+    phone       String
+    address     String
+    description String
+    warehouse   Int
+    createdUtc  Int
+    onlineUtc   Int
+
+    @@map("members")
+}
+
+model Client {
+    id              Int             @id @default(autoincrement())
+    active          Boolean
+    name            String
+    phone           String          @unique
+    description     String
+    address         String
+    devicesJ        String
+    createdUtc      Int
+    onlineUtc       Int
+    messages        Message[]
+    adminOfRooms    Room[]
+    clientsAndRooms ClientAndRoom[]
+
+    @@map("clients")
+}
+
+model Message {
+    id          Int    @id @default(autoincrement())
+    description String
+    clientId    Int
+    client      Client @relation(fields: [clientId], references: [id])
+    roomId      Int
+    room        Room   @relation(fields: [roomId], references: [id])
+    createdUtc  Int
+
+    @@map("messages")
+}
+
+model Room {
+    id            Int             @id @default(autoincrement())
+    name          String
+    adminClientId Int?
+    adminClient   Client?         @relation(fields: [adminClientId], references: [id])
+    clients       ClientAndRoom[]
+    messages      Message[]
+    createdUtc    Int
+
+    @@map("rooms")
+}
+
+model ClientAndRoom {
+    client     Client @relation(fields: [clientId], references: [id])
+    room       Room   @relation(fields: [roomId], references: [id])
+    clientId   Int
+    roomId     Int
+    createdUtc Int
+
+    @@id([clientId, roomId])
+    @@map("clients_and_rooms")
+}
