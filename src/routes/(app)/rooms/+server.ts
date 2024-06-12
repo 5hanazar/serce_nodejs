@@ -51,7 +51,7 @@ export async function GET({ locals }) {
 		};
 	});
 
-	return json(result);
+	return json({user, result});
 }
 
 export async function POST({ request, locals }) {

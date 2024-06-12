@@ -3,6 +3,18 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 export default prisma;
 
+import { connect } from 'mqtt';
+const mqtt = connect("mqtt://localhost", { username: '', password: '' });
+mqtt.on('connect', () => {
+    console.log('MQTT Connected');
+});
+mqtt.on('close', function() {
+    console.log("MQTT Disconnected")
+})
+export const notifyClient = (receiverId: number, senderId: number, message: string) => {
+	mqtt.publish(`client${receiverId}`, message);
+};
+
 export const filePath = "C:/Users/User/Documents/shapro/svkit/serce/static/images"
 export const filePathUploads = "C:/Users/User/Documents/shapro/svkit/serce/static/uploads"
 //export const filePath = "/var/www/html/images"
@@ -98,5 +110,6 @@ export type MessageDtoView = {
 	id: number;
 	description: string;
 	client: ClientDtoView;
+    isMine: boolean;
 	createdDate: string;
 };

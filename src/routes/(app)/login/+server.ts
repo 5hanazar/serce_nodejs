@@ -7,6 +7,7 @@ export async function POST({ request }) {
     const json: { name: string; phone: string } = await request.json();
     const buf = await prisma.client.findUnique({
         where: {
+            active: true,
             name: json.name,
             phone: json.phone
         }
@@ -14,7 +15,7 @@ export async function POST({ request }) {
     if (buf == null) return new Response(null, { status: 401 });
     let user: { id: number; phone: string } = { id: buf.id, phone: buf.phone }
     const token = jwt.sign(JSON.stringify(user), PRIVATE_KEY)
-	return new Response(token, {
+	return new Response(`serce_user=${token}`, {
         headers: {
             'Set-Cookie': `serce_user=${token};path=/;SameSite=None;Secure`
         },

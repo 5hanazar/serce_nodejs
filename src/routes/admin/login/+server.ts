@@ -7,6 +7,7 @@ export async function POST({ request }) {
     const user = await request.json();
     const buf = await prisma.member.findUnique({
         where: {
+            active: true,
             username: user.username
         }
     })

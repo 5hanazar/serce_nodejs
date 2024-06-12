@@ -1,5 +1,5 @@
 /** @type {import('./$types').RequestHandler} */
-import prisma, { formatTime, getLocalTimestampInSeconds, type ClientDtoView, type RoomDtoView } from "$lib/server";
+import prisma, { formatTime, getLocalTimestampInSeconds, notifyClient, type ClientDtoView, type RoomDtoView } from "$lib/server";
 import { json } from "@sveltejs/kit";
 
 export async function GET({ locals, params }) {
@@ -23,6 +23,9 @@ export async function GET({ locals, params }) {
             messages: {
                 include: {
                     client: true
+                },
+                orderBy: {
+                    id: 'asc'
                 }
             }
         },
@@ -57,12 +60,13 @@ export async function GET({ locals, params }) {
                 description: o.client.description,
                 address: o.client.address
             },
+            isMine: o.client.id == user.id,
             createdDate: formatTime(o.createdUtc),
         })),
         createdDate: formatTime(e.createdUtc)
     }
 
-	return json(result);
+	return json({result});
 }
 
 export async function POST({ request, locals, params }) {
@@ -84,6 +88,15 @@ export async function POST({ request, locals, params }) {
             roomId: parseInt(params.id),
             createdUtc: getLocalTimestampInSeconds()
         },
+    })
+
+    const buf = await prisma.clientAndRoom.findMany({
+        where: {
+            roomId: parseInt(params.id)
+        }
+    })
+    buf.forEach(e => {
+        notifyClient(e.clientId, user.id, body.description)
     })
 
 	return new Response("", {

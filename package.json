@@ -31,6 +31,7 @@
 	"dependencies": {
 		"@prisma/client": "^5.0.0",
 		"cookie": "^0.5.0",
-		"jsonwebtoken": "^9.0.1"
+		"jsonwebtoken": "^9.0.1",
+		"mqtt": "^5.7.0"
 	}
 }
