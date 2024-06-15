@@ -104,6 +104,7 @@ export type RoomDtoView = {
 	adminClient: ClientDtoView | null;
 	clients: ClientDtoView[];
     messages: MessageDtoView[];
+    lastMessage: string | null;
 	createdDate: string;
 };
 export type MessageDtoView = {

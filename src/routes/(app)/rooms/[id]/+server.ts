@@ -25,7 +25,7 @@ export async function GET({ locals, params }) {
                     client: true
                 },
                 orderBy: {
-                    id: 'asc'
+                    id: 'desc'
                 }
             }
         },
@@ -63,6 +63,7 @@ export async function GET({ locals, params }) {
             isMine: o.client.id == user.id,
             createdDate: formatTime(o.createdUtc),
         })),
+        lastMessage: null,
         createdDate: formatTime(e.createdUtc)
     }
 
@@ -92,7 +93,10 @@ export async function POST({ request, locals, params }) {
 
     const buf = await prisma.clientAndRoom.findMany({
         where: {
-            roomId: parseInt(params.id)
+            roomId: parseInt(params.id),
+            clientId: {
+                not: user.id
+            }
         }
     })
     buf.forEach(e => {

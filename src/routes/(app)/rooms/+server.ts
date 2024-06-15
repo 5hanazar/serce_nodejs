@@ -29,7 +29,15 @@ export async function GET({ locals }) {
         }
     });
 
-	const result: RoomDtoView[] = buf.map((e) => {
+    const result: RoomDtoView[] = await Promise.all(buf.map(async (e) => {
+        const lastMessage = await prisma.message.findFirst({
+            where: {
+                roomId: e.id
+            },
+            orderBy: {
+                id: 'desc'
+            }
+        });
 		return {
 			id: e.id,
 			adminClient: e.adminClient == null ? null : {
@@ -47,9 +55,10 @@ export async function GET({ locals }) {
                 address: o.client.address
             })),
             messages: [],
+            lastMessage: lastMessage?.description ?? null,
             createdDate: formatTime(e.createdUtc)
 		};
-	});
+	}));
 
 	return json({user, result});
 }
