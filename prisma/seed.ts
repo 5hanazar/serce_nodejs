@@ -48,7 +48,8 @@ async function main() {
         data: {
             name: "",
             adminClientId: null,
-            createdUtc: now
+            createdUtc: now,
+            modifiedUtc: now
         }
     })
     await prisma.clientAndRoom.create({

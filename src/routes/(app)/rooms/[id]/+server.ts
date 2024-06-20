@@ -64,7 +64,8 @@ export async function GET({ locals, params }) {
             createdDate: formatTime(o.createdUtc),
         })),
         lastMessage: null,
-        createdDate: formatTime(e.createdUtc)
+        createdDate: formatTime(e.createdUtc),
+        modifiedDate: formatTime(e.modifiedUtc)
     }
 
 	return json({result});
@@ -81,7 +82,6 @@ export async function POST({ request, locals, params }) {
             roomId: parseInt(params.id)
         }
     })
-
     await prisma.message.create({
         data: {
             description: body.description,
@@ -89,6 +89,14 @@ export async function POST({ request, locals, params }) {
             roomId: parseInt(params.id),
             createdUtc: getLocalTimestampInSeconds()
         },
+    })
+    await prisma.room.update({
+        data: {
+            modifiedUtc: getLocalTimestampInSeconds()
+        },
+        where: {
+            id: parseInt(params.id)
+        }
     })
 
     const buf = await prisma.clientAndRoom.findMany({
@@ -104,6 +112,27 @@ export async function POST({ request, locals, params }) {
     })
 
 	return new Response("", {
+		status: 200,
+	});
+}
+
+export async function DELETE({ params }) {
+    await prisma.message.deleteMany({
+        where: {
+            roomId: parseInt(params.id)
+        }
+    })
+    await prisma.clientAndRoom.deleteMany({
+        where: {
+            roomId: parseInt(params.id)
+        }
+    })
+    await prisma.room.delete({
+        where: {
+            id: parseInt(params.id)
+        }
+    })
+	return new Response(null, {
 		status: 200,
 	});
 }

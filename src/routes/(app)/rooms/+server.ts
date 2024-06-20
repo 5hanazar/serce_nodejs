@@ -26,6 +26,9 @@ export async function GET({ locals }) {
             id: {
                 in: roomIds
             }
+        },
+        orderBy: {
+            modifiedUtc: 'desc'
         }
     });
 
@@ -56,7 +59,8 @@ export async function GET({ locals }) {
             })),
             messages: [],
             lastMessage: lastMessage?.description ?? null,
-            createdDate: formatTime(e.createdUtc)
+            createdDate: formatTime(e.createdUtc),
+            modifiedDate: formatTime(e.modifiedUtc)
 		};
 	}));
 
@@ -77,7 +81,8 @@ export async function POST({ request, locals }) {
     const room = await prisma.room.create({
         data: {
             name: "",
-            createdUtc: getLocalTimestampInSeconds()
+            createdUtc: getLocalTimestampInSeconds(),
+            modifiedUtc: getLocalTimestampInSeconds()
         },
     })
     await prisma.clientAndRoom.create({

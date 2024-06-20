@@ -106,6 +106,7 @@ export type RoomDtoView = {
     messages: MessageDtoView[];
     lastMessage: string | null;
 	createdDate: string;
+    modifiedDate: string;
 };
 export type MessageDtoView = {
 	id: number;
