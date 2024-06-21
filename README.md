@@ -1,4 +1,4 @@
-![favicon.png](https://github.com/5hanazar/serce/blob/master/static/favicon.png)
+![favicon.png](https://github.com/5hanazar/serce_nodejs/blob/master/static/favicon.png)
 
 ## Setup
 
